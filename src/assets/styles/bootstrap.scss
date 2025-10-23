@@ -1,0 +1,7 @@
+// 1) Override variables ANTES de importar Bootstrap
+$primary: #ff4d24;
+$secondary: #6c757d;
+$font-family-sans-serif: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+
+// 2) Importar todo Bootstrap con tus overrides
+@import "bootstrap/scss/bootstrap";
