@@ -7,6 +7,7 @@ interface AuthState {
   role: string | null
 }
 
+
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({ token: localStorage.getItem('token'), email: null, role: null }),
   getters: { isAuthenticated: (s) => !!s.token },
