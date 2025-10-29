@@ -46,7 +46,10 @@
           </div>
           <div class="d-flex justify-content-end gap-2 mt-3">
             <button class="btn btn-outline-secondary" @click="closeDlg">Cancelar</button>
-            <button class="btn btn-dark" @click="save">Guardar</button>
+            <button class="btn btn-dark" @click="save" :disabled="isSaving" :aria-busy="isSaving">
+             <span v-if="isSaving" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+             {{ isSaving ? 'Guardando...' : 'Guardar' }}
+            </button>
           </div>
         </div>
       </div>
@@ -55,10 +58,11 @@
 </template>
 
 <script setup lang="ts">
+import { showToast } from '@/utils/toast'
 import { onMounted, reactive, ref } from 'vue'
 import { useProductsStore } from '@/stores/products'
 import type { ProductDto } from '@/types/product'
-
+const isSaving = ref(false)
 const store = useProductsStore()
 const dlg = ref<HTMLDialogElement | null>(null)
 const form = reactive<Partial<ProductDto> & { price: number; stock: number }>({ id: 0, name: '', price: 0, stock: 0, createdAt: '' })
@@ -67,12 +71,37 @@ const openNew = () => { Object.assign(form, { id: 0, name: '', price: 0, stock: 
 const edit = (p: ProductDto) => { Object.assign(form, p); dlg.value?.showModal() }
 const closeDlg = () => dlg.value?.close()
 
+
+
 const save = async () => {
-  const payload = { name: form.name ?? '', price: +form.price, stock: +form.stock }
-  if (form.id) await store.update(form.id as number, payload)
-  else await store.create(payload)
-  closeDlg()
+    isSaving.value = true
+    const payload = { name: form.name ?? '', price: +form.price, stock: +form.stock }
+    try {
+      if (form.id) {
+        await store.update(form.id as number, payload)
+        showToast('success', 'Producto editado correctamente')
+      } else {
+        await store.create(payload)
+        showToast('success', 'Producto creado correctamente')
+      }
+      closeDlg()
+    } catch (err: any) {
+      showToast('error', err?.message ?? 'Error al guardar producto')
+      throw err
+    } finally {
+      isSaving.value = false
+    }
+  }
+const del = async (id: number) => {
+ if (!confirm('¿Borrar?')) return
+ try {
+    await store.remove(id)
+    showToast('success', 'Producto eliminado correctamente')
+    await store.fetch()
+} catch (err: any) {
+   showToast('error', err?.message ?? 'Error al borrar producto')
+    throw err
 }
-const del = async (id: number) => { if (confirm('¿Borrar?')) await store.remove(id) }
+}
 onMounted(store.fetch)
 </script>
