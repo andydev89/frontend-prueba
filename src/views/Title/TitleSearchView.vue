@@ -1,15 +1,18 @@
-
 <template>
   <div>
     <NavBar />
     <div class="container py-4">
       <h4 class="mb-3">Buscar títulos</h4>
 
-      <!-- Filtros -->
+      <!-- Filtros principales -->
       <div class="row g-2 mb-4 align-items-end">
         <div class="col-md-5">
           <label class="form-label small text-muted">Nombre</label>
-          <input v-model="q" class="form-control" placeholder="Ej: Matrix, Inception..." />
+          <input
+            v-model="q"
+            class="form-control"
+            placeholder="Ej: Matrix, Inception..."
+          />
         </div>
         <div class="col-md-3">
           <label class="form-label small text-muted">Tipo</label>
@@ -31,8 +34,15 @@
           />
         </div>
         <div class="col-md-2 d-grid">
-          <button class="btn btn-dark" @click="() => buscar()" :disabled="titles.loading">
-            <span v-if="titles.loading" class="spinner-border spinner-border-sm me-1"></span>
+          <button
+            class="btn btn-dark"
+            @click="() => buscar(1)"
+            :disabled="titles.loading"
+          >
+            <span
+              v-if="titles.loading"
+              class="spinner-border spinner-border-sm me-1"
+            ></span>
             Buscar
           </button>
         </div>
@@ -45,12 +55,50 @@
         </div>
       </div>
 
-      <!-- Paginador -->
-      <div class="d-flex justify-content-between align-items-center mt-4">
-        <small class="text-muted">
-          Página {{ titles.page }} de {{ totalPages }}
-        </small>
+      <!-- Controles de paginación y orden -->
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center mt-4 gap-3 border-top pt-3"
+      >
+        <!-- Select de cantidad por página -->
+        <div class="d-flex align-items-center gap-2">
+          <label class="small text-muted mb-0">Mostrar:</label>
+          <select
+            v-model.number="titles.pageSize"
+            class="form-select form-select-sm w-auto"
+            @change="buscar(1)"
+          > <option :value="2">2</option>
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+          </select>
+          <span class="small text-muted">por página</span>
+        </div>
 
+        <!-- Ordenar por -->
+        <div class="d-flex align-items-center gap-2">
+          <label class="small text-muted mb-0">Ordenar por:</label>
+          <select
+            v-model="titles.sortBy"
+            class="form-select form-select-sm w-auto"
+            @change="buscar(1)"
+          >
+            <option value="nombre">Nombre</option>
+            <option value="año">Año</option>
+            <option value="tipo">Tipo</option>
+            <option value="genero">Género</option>
+          </select>
+
+          <select
+            v-model="titles.sortDir"
+            class="form-select form-select-sm w-auto"
+            @change="buscar(1)"
+          >
+            <option value="asc">Ascendente</option>
+            <option value="desc">Descendente</option>
+          </select>
+        </div>
+
+        <!-- Navegación de páginas -->
         <div class="btn-group">
           <button
             class="btn btn-outline-secondary btn-sm"
@@ -59,6 +107,11 @@
           >
             <i class="bi bi-chevron-left"></i>
           </button>
+
+          <button class="btn btn-outline-secondary btn-sm disabled" disabled>
+            Página {{ titles.page }} / {{ totalPages }}
+          </button>
+
           <button
             class="btn btn-outline-secondary btn-sm"
             :disabled="titles.page >= totalPages || titles.loading"
@@ -70,13 +123,13 @@
       </div>
     </div>
 
+    <!-- Modal para añadir título -->
     <AddToListModal ref="addModal" @confirm="confirmAdd" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import NavBar from '@/components/AppNavbar.vue'
 import TitleCard from '@/components/TitleCard.vue'
 import AddToListModal from '@/views/List/AddToListModal.vue'
 import { useTitlesStore } from '@/stores/titles'
@@ -105,7 +158,7 @@ async function confirmAdd(listaId: number) {
 
 // Paginación
 const totalPages = computed(() =>
-  Math.ceil(titles.total / titles.pageSize)
+  Math.max(1, Math.ceil(titles.total / titles.pageSize))
 )
 
 async function buscar(page = 1) {
@@ -126,3 +179,17 @@ function changePage(page: number) {
 
 onMounted(() => buscar(1))
 </script>
+
+<style scoped>
+select.form-select-sm {
+  min-width: 100px;
+}
+
+.btn-group button {
+  min-width: 36px;
+}
+
+.border-top {
+  border-color: #e9ecef !important;
+}
+</style>
