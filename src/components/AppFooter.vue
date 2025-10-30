@@ -7,8 +7,7 @@
           <small class="text-muted">© {{ year }} Todos los derechos reservados</small>
         </div>
         <div class="col-md-6 text-md-end">
-          <a class="text-decoration-none me-3" href="#">Términos</a>
-          <a class="text-decoration-none" href="#">Privacidad</a>
+         
         </div>
       </div>
     </div>
