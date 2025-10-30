@@ -6,8 +6,7 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: { '@': path.resolve(__dirname, 'src'),
-      '~bootstrap': resolve(dirname(fileURLToPath(import.meta.url)), 'node_modules/bootstrap'),
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      
     extensions: [
       '.js',
       '.json',

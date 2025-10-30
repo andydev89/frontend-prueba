@@ -1,11 +1,10 @@
 <template>
-  <!-- Mismo layout del ejemplo: centro vertical, fondo terciario -->
+  
   <div class="d-flex align-items-center py-4 bg-body-tertiary min-vh-100">
     <main class="form-signin w-100 m-auto">
       <form @submit.prevent="onSubmit" novalidate>
-        <!-- Logo (opcional) 
-        <img class="mb-4" src="../assets/vue.svg" alt="logo" width="72" height="57" />-->
-
+       
+       
         <h1 class="h3 mb-3 fw-normal">Iniciar sesión</h1>
 
         <div class="form-floating mb-2">

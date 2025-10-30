@@ -3,7 +3,7 @@
     <div class="container py-4">
       <div class="row gy-3">
         <div class="col-md-6">
-          <div class="fw-semibold">MiSitio</div>
+          <div class="fw-semibold">netflix Tracker</div>
           <small class="text-muted">© {{ year }} Todos los derechos reservados</small>
         </div>
         <div class="col-md-6 text-md-end">
